@@ -1,0 +1,3665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI Career Assistant - Complete Solution</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      color: #333;
+      overflow-x: hidden;
+    }
+
+    .main-container {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Navigation */
+    .nav-container {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      padding: 1rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      padding: 0 2rem;
+    }
+
+    .nav-button {
+      background: rgba(255, 255, 255, 0.2);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      color: white;
+      padding: 0.8rem 2rem;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 600;
+      font-size: 0.9rem;
+      backdrop-filter: blur(5px);
+    }
+
+    .nav-button:hover, .nav-button.active {
+      background: rgba(255, 255, 255, 0.3);
+      border-color: rgba(255, 255, 255, 0.5);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Content Container */
+    .content-container {
+      flex: 1;
+      padding: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .section {
+      display: none;
+      animation: fadeIn 0.5s ease-in;
+    }
+
+    .section.active {
+      display: block;
+    }
+
+    /* Welcome Section */
+    .welcome-section {
+      text-align: center;
+      color: white;
+      padding: 4rem 2rem;
+    }
+
+    .welcome-title {
+      font-size: 3.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .welcome-subtitle {
+      font-size: 1.3rem;
+      margin-bottom: 3rem;
+      opacity: 0.9;
+      font-weight: 300;
+    }
+
+    .feature-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+
+    .feature-card {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 2rem;
+      border-radius: 20px;
+      text-align: center;
+      color: #333;
+      transition: transform 0.3s ease;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .feature-card:hover {
+      transform: translateY(-10px);
+    }
+
+    .feature-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Chat Bot Section */
+    .chat-container {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(10px);
+      overflow: hidden;
+      height: 70vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chat-header {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      padding: 1.5rem;
+      text-align: center;
+      color: white;
+    }
+
+    .chat-messages {
+      flex: 1;
+      padding: 2rem;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .message {
+      max-width: 80%;
+      padding: 1rem 1.5rem;
+      border-radius: 20px;
+      animation: slideIn 0.3s ease-out;
+      line-height: 1.5;
+    }
+
+    .bot-message {
+      background: linear-gradient(135deg, #f8f9ff, #e8f0ff);
+      border: 1px solid #e0e8ff;
+      align-self: flex-start;
+      margin-right: auto;
+    }
+
+    .user-message {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      align-self: flex-end;
+      margin-left: auto;
+    }
+
+    /* Recommendation Section */
+    .recommendation-container {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      padding: 3rem;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(10px);
+    }
+
+    .recommendation-title {
+      text-align: center;
+      color: #1a1a1a;
+      margin-bottom: 2rem;
+      font-size: 2.5rem;
+      font-weight: 700;
+    }
+
+    .input-section {
+      margin-bottom: 2rem;
+    }
+
+    .input-label {
+      display: block;
+      margin-bottom: 1rem;
+      font-weight: 600;
+      color: #333;
+      font-size: 1.1rem;
+    }
+
+    .user-input {
+      width: 100%;
+      font-size: 16px;
+      padding: 1.2rem;
+      border-radius: 12px;
+      border: 2px solid #e0e8ff;
+      resize: vertical;
+      min-height: 120px;
+      font-family: 'Inter', sans-serif;
+      transition: border-color 0.3s ease;
+    }
+
+    .user-input:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .recommend-button {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      font-size: 18px;
+      border: none;
+      border-radius: 12px;
+      padding: 1.2rem 2rem;
+      cursor: pointer;
+      width: 100%;
+      transition: all 0.3s ease;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .recommend-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+    }
+
+    .recommend-button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .results-container {
+      margin-top: 2rem;
+    }
+
+    .job-card {
+      background: linear-gradient(135deg, #f8f9ff, #e8f0ff);
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      border-radius: 15px;
+      border-left: 5px solid #667eea;
+      transition: transform 0.3s ease;
+    }
+
+    .job-card:hover {
+      transform: translateX(5px);
+    }
+
+    .job-card h3 {
+      margin: 0 0 1rem;
+      color: #1a1a1a;
+      font-size: 1.3rem;
+    }
+
+    .score-badge {
+      padding: 0.5rem 1rem;
+      border-radius: 25px;
+      color: white;
+      font-weight: 600;
+      font-size: 0.9rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Options and buttons */
+    .options-container {
+      margin: 1rem 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .option-button {
+      background: white;
+      border: 2px solid #667eea;
+      color: #667eea;
+      padding: 1rem 1.5rem;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 1rem;
+      font-weight: 500;
+      text-align: left;
+    }
+
+    .option-button:hover {
+      background: #667eea;
+      color: white;
+      transform: translateX(5px);
+    }
+
+    .back-button {
+      background: #f0f0f0;
+      border: 1px solid #ddd;
+      color: #666;
+      padding: 0.8rem 1.2rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      margin-top: 1rem;
+      align-self: flex-start;
+      transition: all 0.3s ease;
+    }
+
+    .back-button:hover {
+      background: #e0e0e0;
+      transform: translateX(-3px);
+    }
+
+    /* Job details styling */
+    .job-details {
+      background: #f8f9ff;
+      border-left: 4px solid #667eea;
+      padding: 2rem;
+      margin: 1rem 0;
+      border-radius: 12px;
+    }
+
+    .job-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #2c3e50;
+      margin-bottom: 1.5rem;
+    }
+
+    .job-field {
+      margin: 1rem 0;
+    }
+
+    .field-label {
+      font-weight: 600;
+      color: #667eea;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.5rem;
+    }
+
+    .field-content {
+      color: #555;
+      line-height: 1.6;
+    }
+
+    .salary-info {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      padding: 1rem;
+      border-radius: 8px;
+      margin: 0.5rem 0;
+    }
+
+    .growth-info {
+      background: #e8f5e8;
+      color: #2d5a2d;
+      padding: 1rem;
+      border-radius: 8px;
+      font-weight: 500;
+    }
+
+    /* Typing indicator */
+    .typing-indicator {
+      display: none;
+      align-self: flex-start;
+      padding: 1rem 1.5rem;
+      background: #f0f0f0;
+      border-radius: 20px;
+      margin-right: auto;
+    }
+
+    .typing-dots {
+      display: flex;
+      gap: 4px;
+    }
+
+    .typing-dot {
+      width: 8px;
+      height: 8px;
+      background: #667eea;
+      border-radius: 50%;
+      animation: typing 1.4s infinite;
+    }
+
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes typing {
+      0%, 60%, 100% { transform: translateY(0); }
+      30% { transform: translateY(-10px); }
+    }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
+      .welcome-title {
+        font-size: 2.5rem;
+      }
+      
+      .nav {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: center;
+      }
+      
+      .content-container {
+        padding: 1rem;
+      }
+      
+      .chat-container {
+        height: 60vh;
+      }
+      
+      .message {
+        max-width: 90%;
+      }
+      
+      .feature-cards {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="main-container">
+    <!-- Navigation -->
+    <div class="nav-container">
+      <div class="nav">
+        <button class="nav-button active" onclick="showSection('welcome')">
+          <i class="fas fa-home"></i> Home
+        </button>
+        <button class="nav-button" onclick="showSection('chatbot')">
+          <i class="fas fa-robot"></i> Career Guide
+        </button>
+        <button class="nav-button" onclick="showSection('recommendations')">
+          <i class="fas fa-magic"></i> AI Recommendations
+        </button>
+      </div>
+    </div>
+
+    <div class="content-container">
+      <!-- Welcome Section -->
+      <div id="welcome" class="section active">
+        <div class="welcome-section">
+          <h1 class="welcome-title">🚀 AI Career Assistant</h1>
+          <p class="welcome-subtitle">Your complete solution for career exploration and job recommendations</p>
+          
+          <div class="feature-cards">
+            <div class="feature-card" onclick="showSection('chatbot')">
+              <div class="feature-icon">🤖</div>
+              <h3>Interactive Career Guide</h3>
+              <p>Explore detailed career information across multiple technology fields with our intelligent chatbot</p>
+            </div>
+            
+            <div class="feature-card" onclick="showSection('recommendations')">
+              <div class="feature-icon">🎯</div>
+              <h3>AI-Powered Recommendations</h3>
+              <p>Get personalized job recommendations based on your skills and interests using advanced AI</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chatbot Section -->
+      <div id="chatbot" class="section">
+        <div class="chat-container">
+          <div class="chat-header">
+            <h2><i class="fas fa-robot"></i> Career Guide Bot</h2>
+            <p>Discover your perfect career path</p>
+          </div>
+
+          <div class="chat-messages" id="chatMessages"></div>
+
+          <div class="typing-indicator" id="typingIndicator">
+            <div class="typing-dots">
+              <div class="typing-dot"></div>
+              <div class="typing-dot"></div>
+              <div class="typing-dot"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recommendations Section -->
+      <div id="recommendations" class="section">
+        <div class="recommendation-container">
+          <h1 class="recommendation-title">🎯 AI Job Recommendations</h1>
+          
+          <div class="input-section">
+            <label for="userInput" class="input-label">
+              <i class="fas fa-user"></i> Tell us about your skills, interests, or dream job:
+            </label>
+            <textarea 
+              id="userInput" 
+              class="user-input"
+              placeholder="e.g., I enjoy solving logical problems, working with data, and building user interfaces. I have experience with Python and JavaScript."
+            ></textarea>
+          </div>
+          
+          <button onclick="recommendJobs()" class="recommend-button" id="recommendBtn">
+            <i class="fas fa-search"></i> Find My Perfect Jobs
+          </button>
+          
+          <div class="results-container" id="resultBox"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Global variables
+    let jobsData = {};
+    let currentState = 'welcome';
+    let selectedCategory = '';
+
+    // DOM elements
+    const chatMessages = document.getElementById('chatMessages');
+    const typingIndicator = document.getElementById('typingIndicator');
+
+    // Navigation functionality
+    function showSection(sectionName) {
+      // Hide all sections
+      document.querySelectorAll('.section').forEach(section => {
+        section.classList.remove('active');
+      });
+      
+      // Remove active class from all nav buttons
+      document.querySelectorAll('.nav-button').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      
+      // Show selected section
+      document.getElementById(sectionName).classList.add('active');
+      
+      // Add active class to corresponding nav button
+      event.target.classList.add('active');
+      
+      // Initialize chatbot if switching to it
+      if (sectionName === 'chatbot' && Object.keys(jobsData).length === 0) {
+        loadJobsData();
+      }
+    }
+
+    // Chatbot functionality
+    async function loadJobsData() {
+      try {
+        const response = await fetch('/api/categories');
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const categories = await response.json();
+        
+        // Load full job data
+        jobsData = {};
+        for (const category of categories) {
+          const jobsResponse = await fetch(`/api/jobs?category=${encodeURIComponent(category)}`);
+          if (jobsResponse.ok) {
+            jobsData[category] = await jobsResponse.json();
+          }
+        }
+        
+        console.log('Jobs data loaded successfully:', jobsData);
+        initializeChat();
+      } catch (error) {
+        console.error('Error loading jobs data:', error);
+        chatMessages.innerHTML = '<div class="message bot-message">Sorry, I\'m having trouble loading career data. Please try refreshing the page.</div>';
+      }
+    }
+
+    function showTyping() {
+      typingIndicator.style.display = 'flex';
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function hideTyping() {
+      typingIndicator.style.display = 'none';
+    }
+
+    function addMessage(content, isBot = true, delay = 1000) {
+      return new Promise(resolve => {
+        if (isBot) {
+          showTyping();
+          setTimeout(() => {
+            hideTyping();
+            const message = document.createElement('div');
+            message.className = `message ${isBot ? 'bot-message' : 'user-message'}`;
+            message.innerHTML = content;
+            chatMessages.appendChild(message);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            resolve();
+          }, delay);
+        } else {
+          const message = document.createElement('div');
+          message.className = `message ${isBot ? 'bot-message' : 'user-message'}`;
+          message.innerHTML = content;
+          chatMessages.appendChild(message);
+          chatMessages.scrollTop = chatMessages.scrollHeight;
+          resolve();
+        }
+      });
+    }
+
+    function formatCategoryName(category) {
+      return category
+        .replace(/([A-Z])/g, ' $1')
+        .replace(/^./, str => str.toUpperCase())
+        .trim();
+    }
+
+    async function initializeChat() {
+      chatMessages.innerHTML = ''; // Clear previous messages
+      await addMessage("👋 Hello! I'm your Career Guide Bot. I'm here to help you explore exciting career opportunities in technology!");
+      
+      if (Object.keys(jobsData).length === 0) {
+        await addMessage("I'm still loading career data. Please try again in a moment.", true, 500);
+        return;
+      }
+
+      await showCategoryOptions();
+    }
+
+    async function showCategoryOptions() {
+      currentState = 'categories';
+      await addMessage("I have information about careers in these amazing fields. Which one interests you the most?");
+      
+      const categories = Object.keys(jobsData);
+      let optionsHtml = '<div class="options-container">';
+      
+      categories.forEach((category, index) => {
+        const displayName = formatCategoryName(category);
+        optionsHtml += `<button class="option-button" onclick="selectCategory('${category}')">${index + 1}. ${displayName}</button>`;
+      });
+      
+      optionsHtml += '</div>';
+      
+      const message = document.createElement('div');
+      message.className = 'message bot-message';
+      message.innerHTML = optionsHtml;
+      chatMessages.appendChild(message);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    async function selectCategory(category) {
+      selectedCategory = category;
+      const displayName = formatCategoryName(category);
+      
+      await addMessage(`${displayName}`, false, 0);
+      await addMessage(`Great choice! ${displayName} is an exciting field with lots of opportunities. Here are the specific roles I can tell you about:`);
+      
+      await showJobOptions(category);
+    }
+
+    async function showJobOptions(category) {
+      currentState = 'jobs';
+      const jobs = jobsData[category] || [];
+      
+      if (jobs.length === 0) {
+        await addMessage("Sorry, I don't have information about jobs in this category yet. Let me show you other categories.", true, 500);
+        await showCategoryOptions();
+        return;
+      }
+
+      let optionsHtml = '<div class="options-container">';
+      
+      jobs.forEach((job, index) => {
+        optionsHtml += `<button class="option-button" onclick="selectJob(${index})">${index + 1}. ${job.job_title}</button>`;
+      });
+      
+      optionsHtml += `<button class="back-button" onclick="goBackToCategories()">← Back to Categories</button></div>`;
+      
+      const message = document.createElement('div');
+      message.className = 'message bot-message';
+      message.innerHTML = optionsHtml;
+      chatMessages.appendChild(message);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    async function selectJob(jobIndex) {
+      const jobs = jobsData[selectedCategory];
+      const job = jobs[jobIndex];
+      
+      await addMessage(`${job.job_title}`, false, 0);
+      await addMessage(`Excellent choice! Let me tell you everything about being a ${job.job_title}:`);
+      
+      const jobDetailsHtml = `
+        <div class="job-details">
+          <div class="job-title">${job.job_title}</div>
+          
+          <div class="job-field">
+            <div class="field-label">What you'll do</div>
+            <div class="field-content">${job.description || 'Description not available'}</div>
+          </div>
+          
+          <div class="job-field">
+            <div class="field-label">Key Skills Needed</div>
+            <div class="field-content">${job.key_skills || 'Skills not specified'}</div>
+          </div>
+          
+          <div class="job-field">
+            <div class="field-label">Education Requirements</div>
+            <div class="field-content">${job.education_details || 'Education requirements not specified'}</div>
+          </div>
+          
+          <div class="job-field">
+            <div class="field-label">Salary Expectations</div>
+            <div class="salary-info">
+              <div>🎓 Fresh Graduates: ${job.fresher_salary_usd || 'Not specified'}</div>
+              <div>💼 Experienced Professionals: ${job.professional_salary_usd || 'Not specified'}</div>
+            </div>
+          </div>
+          
+          <div class="job-field">
+            <div class="field-label">Career Growth Potential</div>
+            <div class="growth-info">${job.career_growth || 'Growth information not available'}</div>
+          </div>
+        </div>
+      `;
+      
+      const message = document.createElement('div');
+      message.className = 'message bot-message';
+      message.innerHTML = jobDetailsHtml;
+      chatMessages.appendChild(message);
+      
+      await addMessage("Would you like to explore more careers?", true, 500);
+      
+      let optionsHtml = '<div class="options-container">';
+      optionsHtml += `<button class="option-button" onclick="showJobOptions('${selectedCategory}')">More jobs in ${formatCategoryName(selectedCategory)}</button>`;
+      optionsHtml += `<button class="option-button" onclick="goBackToCategories()">Explore other categories</button>`;
+      optionsHtml += '</div>';
+      
+      const optionsMessage = document.createElement('div');
+      optionsMessage.className = 'message bot-message';
+      optionsMessage.innerHTML = optionsHtml;
+      chatMessages.appendChild(optionsMessage);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    async function goBackToCategories() {
+      await addMessage("Back to categories", false, 0);
+      await showCategoryOptions();
+    }
+
+    // Job Recommendations functionality
+    function formatJobScore(score) {
+      const percentage = Math.round(score * 100);
+      let bgColor = '#dc3545'; // red
+
+      if (percentage >= 90) {
+        bgColor = '#28a745'; // green
+      } else if (percentage >= 80) {
+        bgColor = '#17a2b8'; // teal
+      } else if (percentage >= 70) {
+        bgColor = '#ffc107'; // yellow
+      } else if (percentage >= 60) {
+        bgColor = '#fd7e14'; // orange
+      }
+
+      return { percentage, bgColor };
+    }
+
+    async function recommendJobs() {
+      const input = document.getElementById('userInput').value.trim();
+      const resultBox = document.getElementById('resultBox');
+      const recommendBtn = document.getElementById('recommendBtn');
+      
+      resultBox.innerHTML = "";
+
+      if (!input) {
+        resultBox.innerHTML = `
+          <div class="job-card" style="border-left-color: #dc3545;">
+            <h3 style="color: #dc3545;"><i class="fas fa-exclamation-triangle"></i> Input Required</h3>
+            <p>Please tell us about your skills, interests, or what kind of job you're looking for.</p>
+          </div>
+        `;
+        return;
+      }
+
+      // Disable button and show loading
+      recommendBtn.disabled = true;
+      recommendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Finding Perfect Matches...';
+      
+      resultBox.innerHTML = `
+        <div class="job-card">
+          <h3><i class="fas fa-robot"></i> AI is analyzing your profile...</h3>
+          <p>Processing your skills and matching them with thousands of job opportunities.</p>
+        </div>
+      `;
+
+      try {
+        const response = await fetch('/api/recommend-jobs', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userInput: input })
+        });
+
+        const data = await response.json();
+
+        if (data.error) {
+          resultBox.innerHTML = `
+            <div class="job-card" style="border-left-color: #dc3545;">
+              <h3 style="color: #dc3545;"><i class="fas fa-exclamation-circle"></i> Service Error</h3>
+              <p>${data.error}</p>
+              <p><small>Please try again or contact support if the problem persists.</small></p>
+            </div>
+          `;
+          return;
+        }
+
+        if (!Array.isArray(data) || data.length === 0) {
+          resultBox.innerHTML = `
+            <div class="job-card" style="border-left-color: #ffc107;">
+              <h3 style="color: #856404;"><i class="fas fa-search"></i> No Matches Found</h3>
+              <p>We couldn't find jobs matching your criteria. Try being more specific or using different keywords.</p>
+            </div>
+          `;
+          return;
+        }
+
+        const topJobs = data.slice(0, 5);
+        
+        resultBox.innerHTML = `
+          <div style="margin-bottom: 2rem; text-align: center;">
+            <h3 style="color: #28a745; margin-bottom: 0.5rem;">
+              <i class="fas fa-check-circle"></i> Found ${topJobs.length} Perfect Matches!
+            </h3>
+            <p style="color: #666;">Here are your top job recommendations based on AI analysis:</p>
+          </div>
+        ` + topJobs.map((job, index) => {
+          const { percentage, bgColor } = formatJobScore(job.score);
+          const rankEmoji = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '⭐';
+          
+          return `
+            <div class="job-card">
+              <h3>${rankEmoji} ${job.title}</h3>
+              <div class="score-badge" style="background-color: ${bgColor};">
+                <i class="fas fa-star"></i>
+                <span>Match Score: ${percentage}%</span>
+              </div>
+              <p style="margin-top: 1rem; color: #666; font-size: 0.9rem;">
+                This role matches ${percentage}% of your skills and interests based on AI analysis.
+              </p>
+            </div>
+          `;
+        }).join('');
+
+        // Add suggestion for more exploration
+        resultBox.innerHTML += `
+          <div class="job-card" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; text-align: center;">
+            <h3><i class="fas fa-lightbulb"></i> Want to explore more?</h3>
+            <p>Check out our Career Guide Bot for detailed information about specific technology careers!</p>
+            <button onclick="showSection('chatbot')" style="background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 0.8rem 1.5rem; border-radius: 8px; cursor: pointer; margin-top: 1rem;">
+              <i class="fas fa-robot"></i> Open Career Guide
+            </button>
+          </div>
+        `;
+
+      } catch (error) {
+        console.error("Error recommending jobs:", error);
+        resultBox.innerHTML = `
+          <div class="job-card" style="border-left-color: #dc3545;">
+            <h3 style="color: #dc3545;"><i class="fas fa-exclamation-triangle"></i> Connection Error</h3>
+            <p>Failed to get recommendations. Please check your internet connection and try again.</p>
+            <button onclick="recommendJobs()" style="background: #dc3545; border: none; color: white; padding: 0.8rem 1.5rem; border-radius: 8px; cursor: pointer; margin-top: 1rem;">
+              <i class="fas fa-redo"></i> Try Again
+            </button>
+          </div>
+        `;
+      } finally {
+        // Re-enable button
+        recommendBtn.disabled = false;
+        recommendBtn.innerHTML = '<i class="fas fa-search"></i> Find My Perfect Jobs';
+      }
+    }
+
+    // Allow Enter key to trigger recommendations
+    document.getElementById('userInput').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' && e.ctrlKey) {
+        e.preventDefault();
+        recommendJobs();
+      }
+    });
+
+  </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+n and JavaScript."
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+e.</div>';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ about:`);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+you about:`);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+dCategory)}</button>`;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   
+   
+   
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
